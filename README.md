@@ -26,10 +26,6 @@ This project is used by :
 - Gym,Fitness trainer
 
 
-## Tech Stack
-
-**Client:** Flutter
-
 
 
 ## License
