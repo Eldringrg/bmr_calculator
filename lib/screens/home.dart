@@ -10,6 +10,7 @@ class Home extends StatefulWidget {
 }
 
 class _BMRState extends State<Home> {
+  final formKey = GlobalKey<FormState>();
   TextEditingController Age = TextEditingController();
 
   TextEditingController Weight = TextEditingController();
@@ -22,11 +23,11 @@ class _BMRState extends State<Home> {
     super.dispose();
   }
 
-  int _val;
-  int age = 0;
-  int height = 0;
-  int weight = 0;
-  double result;
+  int _val = 0;
+  double age = 0;
+  double height = 0;
+  double weight = 0;
+  double result = 0;
 
   FocusNode first = FocusNode();
   FocusNode second = FocusNode();
@@ -35,9 +36,9 @@ class _BMRState extends State<Home> {
   basalmetabolismrate() {
     setState(
       () {
-        age = int.parse(Age.text);
-        height = int.parse(Height.text);
-        weight = int.parse(Weight.text);
+        age = double.parse(Age.text);
+        height = double.parse(Height.text);
+        weight = double.parse(Weight.text);
         if (_val == 1) {
           result = (5 + (10 * weight) + (6.25 * height) - (5 * age));
         } else {
@@ -75,173 +76,205 @@ class _BMRState extends State<Home> {
                 elevation: 10,
                 child: Container(
                   padding: EdgeInsets.all(30),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            child: const Text(
-                              'Age',
-                              textScaleFactor: 2,
-                            ),
-                          ),
-                          Expanded(
-                              child: SizedBox(
-                            height: 45,
-                            child: TextField(
-                              focusNode: first,
-                              controller: Age,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              child: const Text(
+                                'Age',
+                                textScaleFactor: 2,
                               ),
-                              keyboardType: TextInputType.number,
-                              onSubmitted: (value) {
-                                FocusScope.of(context).requestFocus(second);
-                              },
                             ),
-                          )),
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            child: const Text(
-                              'Age:15-80',
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            child: const Text(
-                              'Gender',
-                              textScaleFactor: 2,
-                            ),
-                          ),
-                          Expanded(
-                            child: Radio(
-                              value: 1,
-                              groupValue: _val,
-                              onChanged: (value) {
-                                setState(() {
-                                  _val = value;
-                                });
-                              },
-                            ),
-                          ),
-                          const Text(
-                            'Male',
-                          ),
-                          Radio(
-                            value: 2,
-                            groupValue: _val,
-                            onChanged: (value) {
-                              setState(() {
-                                _val = value;
-                              });
-                            },
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            child: const Text(
-                              'Female',
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            child: const Text(
-                              'Height',
-                              textScaleFactor: 2,
-                            ),
-                          ),
-                          Expanded(
-                            child: SizedBox(
+                            Expanded(
+                                child: SizedBox(
                               height: 45,
-                              width: 150,
-                              child: TextField(
-                                focusNode: second,
-                                controller: Height,
+                              child: TextFormField(
+                                focusNode: first,
+                                controller: Age,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  hintText: 'in cm',
                                 ),
                                 keyboardType: TextInputType.number,
-                                onSubmitted: (value) {
-                                  FocusScope.of(context).requestFocus(third);
+                                onFieldSubmitted: (value) {
+                                  FocusScope.of(context).requestFocus(second);
+                                },
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Please enter age";
+                                  }
+                                  if (double.parse(value) < 15) {
+                                    return "Enter age > 14";
+                                  }
+                                  if (RegExp(r'^[a-z A-Z]').hasMatch(value)) {
+                                    return "Enter integer value";
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                              ),
+                            )),
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              child: const Text(
+                                'Age:15-80',
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              child: const Text(
+                                'Gender',
+                                textScaleFactor: 2,
+                              ),
+                            ),
+                            Expanded(
+                              child: Radio(
+                                value: 1,
+                                groupValue: _val,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _val = value as int;
+                                  });
                                 },
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.all(9),
-                            child: const Text(
-                              'Weight',
-                              textScaleFactor: 2,
+                            const Text(
+                              'Male',
                             ),
-                          ),
-                          Expanded(
-                            child: SizedBox(
-                              height: 45,
-                              child: TextField(
-                                focusNode: third,
-                                controller: Weight,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  hintText: 'in kg',
-                                ),
-                                keyboardType: TextInputType.number,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          ButtonTheme(
-                            minWidth: 150.0,
-                            height: 40,
-                            child: RaisedButton(
-                              child: Text(
-                                'Calculate',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              onPressed: () {
-                                basalmetabolismrate();
-                                Age.clear();
-                                Weight.clear();
-                                Height.clear();
+                            Radio(
+                              value: 2,
+                              groupValue: _val,
+                              onChanged: (value) {
+                                setState(() {
+                                  _val = value as int;
+                                });
                               },
-                              color: Colors.green,
                             ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            child: Text(
-                              'BMR = $result' ' Calories/day',
-                              textAlign: TextAlign.center,
-                              textScaleFactor: 1.6,
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              child: const Text(
+                                'Female',
+                              ),
                             ),
-                          ),
-                        ],
-                      )
-                    ],
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              child: const Text(
+                                'Height',
+                                textScaleFactor: 2,
+                              ),
+                            ),
+                            Expanded(
+                              child: SizedBox(
+                                height: 45,
+                                width: 150,
+                                child: TextFormField(
+                                    focusNode: second,
+                                    controller: Height,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'in cm',
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    onFieldSubmitted: (value) {
+                                      FocusScope.of(context)
+                                          .requestFocus(third);
+                                    },
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Please enter height";
+                                      } else {
+                                        return null;
+                                      }
+                                    }),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(9),
+                              child: const Text(
+                                'Weight',
+                                textScaleFactor: 2,
+                              ),
+                            ),
+                            Expanded(
+                              child: SizedBox(
+                                height: 45,
+                                child: TextFormField(
+                                    focusNode: third,
+                                    controller: Weight,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      hintText: 'in kg',
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Please enter weight";
+                                      } else {
+                                        return null;
+                                      }
+                                    }),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            ButtonTheme(
+                              minWidth: 150.0,
+                              height: 40,
+                              child: RaisedButton(
+                                child: Text(
+                                  'Calculate',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {}
+                                  basalmetabolismrate();
+                                  Age.clear();
+                                  Weight.clear();
+                                  Height.clear();
+                                },
+                                color: Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  'BMR = $result' ' Calories/day',
+                                  textAlign: TextAlign.center,
+                                  textScaleFactor: 1.6,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
