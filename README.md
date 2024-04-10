@@ -18,6 +18,14 @@ To deploy this project run
   flutter run
 ```
 
+# User Interface
+![Screenshot_1712764436](https://github.com/Eldringrg/bmr_calculator/assets/58216383/e5150534-7452-4400-97cb-7e3c97683216)
+
+# CALCULATED RESULT
+
+![Screenshot_1712764507](https://github.com/Eldringrg/bmr_calculator/assets/58216383/e3d2f025-6b18-4f51-adce-48d9400d93ab)
+
+
 
 ## Used By
 
